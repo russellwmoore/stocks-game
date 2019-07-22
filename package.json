@@ -1,0 +1,60 @@
+{
+  "name": "TTP-FS",
+  "version": "1.0.0",
+  "description": "Init commit",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx webpack client/index.js -o public/bundle.js --mode=\"production\" --module-bind js=babel-loader && NODE_ENV=production node server/index.js",
+    "start:server": "NODE_ENV=development npx nodemon -q --watch server --ignore server/public server/index.js",
+    "start:client": "npx webpack client/index.js -o public/bundle.js -w --mode=\"development\" --module-bind js=babel-loader",
+    "dev": "npm run start:server & npm run start:client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/russellwmoore/TTP-FS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/russellwmoore/TTP-FS/issues"
+  },
+  "homepage": "https://github.com/russellwmoore/TTP-FS#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "connect-flash": "^0.1.1",
+    "connect-session-sequelize": "^6.0.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "iexcloud_api_wrapper": "^1.1.5",
+    "morgan": "^1.9.1",
+    "pg": "^7.11.0",
+    "sequelize": "^5.10.0",
+    "dotenv": "^8.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "chalk": "^2.4.2",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
+    "@babel/plugin-proposal-function-sent": "^7.5.0",
+    "@babel/plugin-proposal-json-strings": "^7.2.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
+    "@babel/plugin-proposal-private-methods": "^7.4.4",
+    "@babel/plugin-proposal-throw-expressions": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-syntax-import-meta": "^7.2.0",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5"
+  }
+}
