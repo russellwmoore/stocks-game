@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Login } from './components';
 
 const appDiv = document.getElementById('app');
 
-class HomePage extends Component {
+class Home extends Component {
   render() {
-    return <h1>hello react</h1>;
+    return (
+      <>
+        <h1>Stock App ++</h1>
+        <Login />
+      </>
+    );
   }
 }
 
-ReactDOM.render(<HomePage />, appDiv);
+ReactDOM.render(<Home />, appDiv);
