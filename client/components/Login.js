@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 class Login extends React.Component {
   constructor() {
@@ -17,12 +18,20 @@ class Login extends React.Component {
     });
   };
 
+  handleSubmit = e => {
+    e.preventDefault();
+    // send credentials to login route
+    axios.post('/auth/login', this.state).then(({ data }) => {
+      console.log(data);
+    });
+  };
+
   render() {
     const { firstName, lastName, email, password } = this.state;
     return (
       <>
         <h1>Log in Now!</h1>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <label>First Name</label>
           <input
             onChange={this.handleChange}

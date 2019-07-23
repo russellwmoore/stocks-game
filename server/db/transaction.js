@@ -9,7 +9,7 @@ const Transaction = db.define('transaction', {
     type: Sequelize.STRING,
   },
   type: {
-    type: Sequelize.ENUM('buy', 'sell'),
+    type: Sequelize.ENUM('buy', 'sell', 'init'),
   },
 });
 

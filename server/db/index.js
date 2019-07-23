@@ -1,8 +1,12 @@
-const Transaction = require('./transactions');
+const Transaction = require('./transaction');
 const User = require('./user');
+const Session = require('./session');
 const db = require('./db');
 
 User.hasMany(Transaction);
 Transaction.belongsTo(User);
 
-module.exports = { db, User, Transaction };
+User.hasMany(Session);
+Session.belongsTo(User);
+
+module.exports = { db, User, Transaction, Session };

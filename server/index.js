@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', require('./api'));
+app.use('/auth', require('./auth'));
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
