@@ -3,8 +3,8 @@ const morgan = require('morgan');
 const chalk = require('chalk');
 const path = require('path');
 const cookieparser = require('cookie-parser');
-const SID = 'SID';
 const uuidv4 = require('uuid/v4');
+const { SID } = require('../constants');
 
 const app = express();
 const PORT = 3000;

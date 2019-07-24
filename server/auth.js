@@ -4,7 +4,6 @@ const { User, Session } = require('./db');
 module.exports = router;
 
 router.post('/login', async (req, res, next) => {
-  console.log(req.body);
   const user = await User.findOne({
     where: {
       email: req.body.email,
@@ -24,7 +23,7 @@ router.post('/login', async (req, res, next) => {
 
   session.setUser(user.id);
 
-  res.send('logged in!');
+  res.send({ id: user.id });
   // if there is a match, then link this session ID with the logged in user
 
   // need to make a middleware to add req.user with the user id for every request to an authorized route
