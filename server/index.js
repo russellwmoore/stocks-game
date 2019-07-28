@@ -31,7 +31,7 @@ app.use((req, res, next) => {
     Session.findOne({
       where: { sessionId: req.cookies[SID] },
       include: [
-        { model: User, attributes: ['firstName', 'lastName', 'email'] },
+        { model: User, attributes: ['id', 'firstName', 'lastName', 'email'] },
       ],
     }).then(session => {
       // if there is no session in the db with the sessionId of the current cookie, send the request on its way. This is an unauthenticated user
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
         next();
       } else {
         // client is authenticated, so populate req.user with their info
-        // req.user = session.user.get({ plain: true });
+        req.user = session.user.get({ plain: true });
         next();
       }
     });

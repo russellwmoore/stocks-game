@@ -4,10 +4,11 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Login from './components/Login';
+import Routes from './components/Routes';
 
 const appDiv = document.getElementById('app');
 
-class Home extends Component {
+class App extends Component {
   componentDidMount() {
     //TODO: check this cookie here against the sessions. If the sessions table
     // has an associated user, then set that user ID to state
@@ -17,11 +18,11 @@ class Home extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <Login />
+          <Routes />
         </Router>
       </Provider>
     );
   }
 }
 
-ReactDOM.render(<Home />, appDiv);
+ReactDOM.render(<App />, appDiv);

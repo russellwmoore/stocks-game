@@ -17,9 +17,20 @@ export const fetchMe = (email, password) => dispatch => {
     .then(({ data }) => {
       console.log('data', data);
       dispatch(setMe(data));
-      history.push('authenticated');
+      history.push('home');
     })
     .catch(e => console.error(`can't set user`));
+};
+
+export const me = () => dispatch => {
+  axios
+    .get('/auth/me')
+    .then(({ data }) => {
+      dispatch(setMe(data || {}));
+    })
+    .catch(err => {
+      console.error(err);
+    });
 };
 
 const initialState = {

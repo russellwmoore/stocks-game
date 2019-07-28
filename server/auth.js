@@ -33,3 +33,16 @@ router.post('/login', async (req, res, next) => {
 
   // need to make a middleware to add req.user with the user id for every request to an authorized route
 });
+
+router.get('/me', (req, res, next) => {
+  res.json(req.user);
+});
+
+router.post('/logout/:id', (req, res, next) => {
+  Session.findOne({ where: { sessionId: req.params.id } })
+    .then(session => {
+      session.userId = null;
+      session.save().then(session => res.json(session));
+    })
+    .catch(next);
+});
