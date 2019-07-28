@@ -7,8 +7,10 @@ import history from './history';
 // set user id on front end
 
 const GET_ME = 'GET_ME';
+const LOG_OUT = 'LOG_OUT';
 
 const setMe = user => ({ type: GET_ME, user });
+const logOut = () => ({ type: LOG_OUT });
 
 export const fetchMe = (email, password) => dispatch => {
   console.log(email, password);
@@ -20,6 +22,13 @@ export const fetchMe = (email, password) => dispatch => {
       history.push('home');
     })
     .catch(e => console.error(`can't set user`));
+};
+
+export const fetchLogOut = () => dispatch => {
+  axios.post('/auth/logout').then(({ data }) => {
+    console.log(data);
+    dispatch(logOut());
+  });
 };
 
 export const me = () => dispatch => {
@@ -42,6 +51,8 @@ const reducer = (state = initialState, action) => {
     case GET_ME:
       console.log(action.user);
       return { ...state, user: action.user };
+    case LOG_OUT:
+      return { ...state, user: {} };
     default:
       return state;
   }

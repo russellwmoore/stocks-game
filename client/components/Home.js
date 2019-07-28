@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { fetchLogOut } from '../store';
 
 class Home extends Component {
   constructor() {
@@ -12,7 +13,7 @@ class Home extends Component {
       <>
         <h1>hellllo home</h1>
         <h1>Hello {this.props.user.firstName}</h1>
-        <button>Log out</button>
+        <button onClick={this.props.fetchLogOut}>Log out</button>
       </>
     );
   }
@@ -25,4 +26,13 @@ const mapState = state => {
   };
 };
 
-export default withRouter(connect(mapState)(Home));
+const mapDispatch = {
+  fetchLogOut,
+};
+
+export default withRouter(
+  connect(
+    mapState,
+    mapDispatch
+  )(Home)
+);

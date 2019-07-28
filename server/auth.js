@@ -38,11 +38,8 @@ router.get('/me', (req, res, next) => {
   res.json(req.user);
 });
 
-router.post('/logout/:id', (req, res, next) => {
-  Session.findOne({ where: { sessionId: req.params.id } })
-    .then(session => {
-      session.userId = null;
-      session.save().then(session => res.json(session));
-    })
+router.post('/logout', (req, res, next) => {
+  Session.destroy({ where: { sessionId: req.cookies.SID } })
+    .then(num => res.json(num))
     .catch(next);
 });
