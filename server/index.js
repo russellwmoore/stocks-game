@@ -12,6 +12,7 @@ const PORT = 3000;
 
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieparser());
 
 app.use((req, res, next) => {
