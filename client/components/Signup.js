@@ -1,13 +1,14 @@
 import React from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
-import { fetchMe } from '../store';
-import { Link, withRouter } from 'react-router-dom';
+import { signupUser } from '../store';
+import { withRouter } from 'react-router-dom';
 
-class Login extends React.Component {
+class Signup extends React.Component {
   constructor() {
     super();
     this.state = {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     };
@@ -21,22 +22,29 @@ class Login extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // send credentials to login route
-    // axios.post('/auth/login', this.state).then(({ data }) => {
-    //   console.log(data);
-    // });
-    this.props.fetchMe(this.state.email, this.state.password);
-
-    // if the log in is a success, then we can redirect to a different page
-    // if the log in is not successful, re-reoute to bad page or just change view in some way
+    this.props.signupUser(this.state);
   };
 
   render() {
-    const { email, password } = this.state;
+    const { firstName, lastName, email, password } = this.state;
     return (
       <>
-        <h1>Log in Now!</h1>
+        <h1>Sign Up Now!</h1>
         <form onSubmit={this.handleSubmit}>
+          <label>First Name</label>
+          <input
+            onChange={this.handleChange}
+            value={firstName}
+            type="text"
+            name="firstName"
+          />
+          <label>Last Name</label>
+          <input
+            onChange={this.handleChange}
+            value={lastName}
+            type="text"
+            name="lastName"
+          />
           <label>Email</label>
           <input
             onChange={this.handleChange}
@@ -53,9 +61,6 @@ class Login extends React.Component {
           />
           <button type="submit">Log In</button>
         </form>
-        <p>
-          No Account? <Link to="/signup">Sign up now</Link>.
-        </p>
       </>
     );
   }
@@ -64,11 +69,11 @@ class Login extends React.Component {
 const mapState = state => ({ user: state.user });
 
 const mapDispatch = {
-  fetchMe,
+  signupUser,
 };
 export default withRouter(
   connect(
     mapState,
     mapDispatch
-  )(Login)
+  )(Signup)
 );

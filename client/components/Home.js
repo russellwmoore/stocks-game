@@ -13,6 +13,7 @@ class Home extends Component {
       <>
         <h1>hellllo home</h1>
         <h1>Hello {this.props.user.firstName}</h1>
+        <div>So many stocks right now!</div>
         <button onClick={this.props.fetchLogOut}>Log out</button>
       </>
     );

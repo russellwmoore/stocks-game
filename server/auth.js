@@ -4,19 +4,19 @@ const { User, Session } = require('./db');
 module.exports = router;
 
 router.post('/login', async (req, res, next) => {
-  //TODO: Password hash and check. split this function up into two pieces. email check, then password check
+  const { email, password } = req.body;
   try {
     const user = await User.findOne({
       where: {
-        email: req.body.email,
+        email,
       },
     });
     if (!user) {
-      console.log('No such user found:', req.body.email);
+      console.log('No such user found:', email);
       return res.status(401).send('Incorrect Email or Password');
     }
-    if (!user.correctPassword(req.body.password)) {
-      console.log('Incorrect password for user:', req.body.email);
+    if (!user.correctPassword(password)) {
+      console.log('Incorrect password for user:', email);
       return res.status(401).send('Incorrect Email or Password');
     }
     // Sessions are for logged in users only
@@ -55,7 +55,13 @@ router.post('/signup', async (req, res, next) => {
       lastName,
       email,
       password,
-    }).catch(next);
+    });
+
+    const session = await Session.create({
+      sessionId: req.cookies.SID,
+    });
+
+    await session.setUser(newUser.id);
 
     // TODO: also need to set up their transaction history here
     res.json(newUser);

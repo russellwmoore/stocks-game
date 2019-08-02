@@ -3,6 +3,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from './Login';
 import Home from './Home';
+import Signup from './Signup';
 import { me } from '../store';
 
 class Routes extends Component {
@@ -11,12 +12,21 @@ class Routes extends Component {
   }
 
   render() {
+    console.log('in routes comoponent', this.props);
     return (
-      <>{this.props.isLoggedIn ? <Home /> : <Login />}</>
-      // <Switch>
-      //   <Route path="/login" component={Login} />
-      //   {this.props.isLoggedIn && <Route path="/home" component={Home} />}
-      // </Switch>
+      <>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
+          {this.props.isLoggedIn && (
+            <Switch>
+              <Route path="/home" component={Home} />
+              <Route path="/" component={Home} />
+            </Switch>
+          )}
+          <Route component={Login} />
+        </Switch>
+      </>
     );
   }
 }
