@@ -1,5 +1,17 @@
 {
-  "presets": ["@babel/env", "@babel/react"],
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "10"
+        }
+      }
+    ],
+
+    "@babel/react"
+  ],
+
   "plugins": [
     [
       "@babel/plugin-proposal-decorators",
@@ -7,6 +19,7 @@
         "legacy": true
       }
     ],
+    "transform-async-functions",
     "@babel/plugin-proposal-function-sent",
     "@babel/plugin-proposal-export-namespace-from",
     "@babel/plugin-proposal-numeric-separator",
