@@ -1,6 +1,7 @@
 const db = require('./db');
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
+const Transaction = require('./transaction');
 
 const User = db.define('user', {
   firstName: {
@@ -64,7 +65,17 @@ const setSaltAndPassword = user => {
   }
 };
 
+const addInitialTransaction = user => {
+  Transaction.create({
+    price: 5000,
+    symbol: null,
+    type: 'init',
+    userId: user.id,
+  });
+};
+
 User.beforeCreate(setSaltAndPassword);
 User.beforeUpdate(setSaltAndPassword);
+User.afterCreate(addInitialTransaction);
 
 module.exports = User;

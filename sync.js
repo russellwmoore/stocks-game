@@ -34,6 +34,13 @@ const sync = async () => {
       amount: 20,
     }),
     Transaction.create({
+      price: 121,
+      symbol: 'KO',
+      type: 'buy',
+      userId: 1,
+      amount: 15,
+    }),
+    Transaction.create({
       price: 50.21,
       symbol: 'FB',
       type: 'buy',

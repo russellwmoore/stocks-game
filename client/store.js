@@ -9,9 +9,16 @@ import history from './history';
 const GET_ME = 'GET_ME';
 const LOG_OUT = 'LOG_OUT';
 const SIGNUP_USER = 'SIGNUP_USER';
+const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
+const SET_PRICES = 'SET_PRICES';
 
 const setMe = user => ({ type: GET_ME, user });
 const signUp = user => ({ type: SIGNUP_USER, user });
+const setTransactions = transactions => ({
+  type: SET_TRANSACTIONS,
+  transactions,
+});
+const setPrices = prices => ({ type: SET_PRICES, prices });
 
 const logOut = () => ({ type: LOG_OUT });
 
@@ -47,6 +54,25 @@ export const fetchLogOut = () => dispatch => {
   });
 };
 
+export const fetchTransactions = userId => async dispatch => {
+  const transactions = await axios.get(`/api/transactions/${userId}`);
+  dispatch(setTransactions(transactions.data));
+  const symbols = transactions.data
+    .map(t => t.symbol)
+    .filter((symbol, idx, self) => {
+      if (symbol) {
+        return self.indexOf(symbol) === idx;
+      }
+    });
+  const prices = await axios.post(`api/prices`, symbols);
+  dispatch(setPrices(prices.data));
+};
+
+export const fetchPrices = symbols => async dispatch => {
+  const { data } = axios.post(`api/prices`, symbols);
+  dispatch(setPrices(data));
+};
+
 export const me = () => dispatch => {
   axios
     .get('/auth/me')
@@ -60,6 +86,8 @@ export const me = () => dispatch => {
 
 const initialState = {
   user: {},
+  transactions: [],
+  prices: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -69,6 +97,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: action.user };
     case LOG_OUT:
       return { ...state, user: {} };
+    case SET_TRANSACTIONS:
+      return { ...state, transactions: action.transactions };
+    case SET_PRICES:
+      return { ...state, prices: action.prices };
+
     default:
       return state;
   }

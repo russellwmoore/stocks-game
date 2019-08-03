@@ -11,6 +11,9 @@ const Transaction = db.define('transaction', {
   type: {
     type: Sequelize.ENUM('buy', 'sell', 'init'),
   },
+  amount: {
+    type: Sequelize.INTEGER,
+  },
 });
 
 module.exports = Transaction;
