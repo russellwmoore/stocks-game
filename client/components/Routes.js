@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from './Login';
-import Home from './Home';
+import Portfolio from './Portfolio';
 import Signup from './Signup';
+import Transactions from './Transactions';
+import Nav from './Nav';
 import { me } from '../store';
 
 class Routes extends Component {
@@ -19,10 +21,14 @@ class Routes extends Component {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
           {this.props.isLoggedIn && (
-            <Switch>
-              <Route path="/home" component={Home} />
-              <Route path="/" component={Home} />
-            </Switch>
+            <>
+              <Nav />
+              <Switch>
+                <Route path="/portfolio" component={Portfolio} />
+                <Route path="/transactions" component={Transactions} />
+                <Route path="/" component={Portfolio} />
+              </Switch>
+            </>
           )}
           <Route component={Login} />
         </Switch>
