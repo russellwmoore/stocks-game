@@ -7,7 +7,8 @@
     "start": "npx webpack client/index.js -o public/bundle.js --mode=\"production\" --module-bind js=babel-loader && NODE_ENV=production node server/index.js",
     "start:server": "NODE_ENV=development npx nodemon -q --watch server --ignore server/public server/index.js",
     "start:client": "npx webpack client/index.js -o public/bundle.js -w --mode=\"development\" --module-bind js=babel-loader",
-    "dev": "npm run start:server & npm run start:client"
+    "dev": "npm run start:server & npm run start:client",
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,6 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "history": "^4.9.0",
-    "iexcloud_api_wrapper": "^1.1.5",
     "pg": "^7.11.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -34,7 +34,6 @@
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "redux": "^4.0.1",
-    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "sequelize": "^5.10.0",
     "socket.io": "^2.2.0",
@@ -59,7 +58,9 @@
     "babel-plugin-transform-async-functions": "^6.22.0",
     "babel-polyfill": "^6.26.0",
     "chalk": "^2.4.2",
+    "jest": "^24.8.0",
     "morgan": "^1.9.1",
+    "redux-logger": "^3.0.6",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.5"
   }

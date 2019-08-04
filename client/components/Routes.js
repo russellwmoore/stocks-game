@@ -6,7 +6,9 @@ import Portfolio from './Portfolio';
 import Signup from './Signup';
 import Transactions from './Transactions';
 import Nav from './Nav';
+import Footer from './Footer';
 import { me } from '../store';
+import MainView from './MainView';
 
 class Routes extends Component {
   componentDidMount() {
@@ -16,23 +18,19 @@ class Routes extends Component {
   render() {
     console.log('in routes comoponent', this.props);
     return (
-      <>
-        <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          {this.props.isLoggedIn && (
-            <>
-              <Nav />
-              <Switch>
-                <Route path="/portfolio" component={Portfolio} />
-                <Route path="/transactions" component={Transactions} />
-                <Route path="/" component={Portfolio} />
-              </Switch>
-            </>
-          )}
-          <Route component={Login} />
-        </Switch>
-      </>
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+
+        {this.props.isLoggedIn && (
+          <Switch>
+            <Route path="/transactions" component={Transactions} />
+            <Route path="/portfolio" component={MainView} />
+            <Route path="/" component={MainView} />
+          </Switch>
+        )}
+        <Route path="/" component={Login} />
+      </Switch>
     );
   }
 }
@@ -46,7 +44,6 @@ const mapState = state => {
 const mapDispatch = dispatch => {
   return {
     loadInitData() {
-      console.log('here');
       dispatch(me());
     },
   };

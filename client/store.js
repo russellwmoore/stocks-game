@@ -30,7 +30,7 @@ export const fetchMe = (email, password) => dispatch => {
     .then(({ data }) => {
       console.log('data in login', data);
       dispatch(setMe(data));
-      history.push('/home');
+      history.push('/portfolio');
     })
     .catch(e => console.error(`can't set user`));
   // TODO: dispatch errors to front end
@@ -42,7 +42,7 @@ export const signupUser = user => dispatch => {
     .then(({ data }) => {
       console.log('data in signup', data);
       dispatch(setMe(data));
-      history.push('/home');
+      history.push('/portfolio');
     })
     .catch(e => console.error(e));
 };

@@ -1,0 +1,16 @@
+.stock-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 450px;
+}
+
+#main-view {
+  display: flex;
+  align-items: flex-start;
+}
+
+#container {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 85%;
+}

@@ -19,3 +19,19 @@ currentStocksSocket.on('connect', () => {
 
 // Disconnect from the channel
 currentStocksSocket.on('disconnect', () => console.log('Disconnected.'));
+
+const url2 = 'https://ws-api.iextrading.com/1.0/deep';
+const openPriceSocket = require('socket.io-client')(url2);
+
+openPriceSocket.on('connect', () => {
+  console.log('stocket open price working');
+
+  openPriceSocket.emit(
+    'subscribe',
+    JSON.stringify({
+      symbols: ['snap'],
+      channels: ['officialprice'],
+    })
+  );
+  openPriceSocket.on('message', msg => console.log('opening price: ', msg));
+});

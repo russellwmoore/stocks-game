@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { fetchLogOut, fetchTransactions, fetchPrices } from '../store';
+import { socket } from '../socketStocks';
+import Purchase from './Purchase';
 
 class Portfolio extends Component {
   constructor() {
@@ -13,52 +15,61 @@ class Portfolio extends Component {
 
   componentDidMount() {
     this.props.fetchTransactions(this.props.user.id);
-    // this.props.fetchPrices();
-    // const symbols = this.props.transactions.map(t => t.symbol);
-    // console.log(symbols, 'component symbols');
-    // this.props.fetchPrices(symbols);
   }
 
-  // calcTotal(stocks) {
-  //   return stocks.reduce((accum, current) => {
-  //     if(current.type === "init") {
-  //       return accum +
-  //     }else if(current.type === "buy") {
-
-  //     }
-  //   }, 0)
-  // }
+  // TODO: move big functions away and import
   render() {
     const { transactions, user, fetchLogOut, prices } = this.props;
     const priceMap = prices.reduce((accum, current) => {
       accum[current.symbol] = current.price;
       return accum;
     }, {});
-    console.log('price map', priceMap);
-    return (
-      <>
-        <h1>Stocks ++</h1>
-        <h1>Hello {user.firstName}</h1>
-        <div>So many stocks right now!</div>
+    const totalCash = transactions.reduce((accum, curr) => {
+      if (curr.type === 'init') {
+        return accum + Number(curr.price);
+      } else if (curr.type === 'buy') {
+        return accum - curr.price * curr.amount;
+      }
+    }, 0);
 
-        <div>
-          {transactions.map(transaction => {
-            if (transaction.type !== 'init') {
-              return (
-                <p key={transaction.id}>
-                  Symbol:{transaction.symbol || 'none'}, Amount of stock:{' '}
-                  {transaction.amount}, Buy price per share:{transaction.price},
-                  Total: {transaction.amount * transaction.price}
-                  Current Price: {priceMap[transaction.symbol]}
-                  Current Value{' '}
-                  {priceMap[transaction.symbol] * transaction.amount}
-                </p>
-              );
-            }
-          })}
+    const combined = transactions.reduce((accum, curr) => {
+      if (curr.type === 'init') return accum;
+      let match = -1;
+      for (let i = 0; i < accum.length; i++) {
+        if (accum[i].symbol === curr.symbol) {
+          match = i;
+          break;
+        }
+      }
+      if (match === -1) {
+        accum.push({ symbol: curr.symbol, amount: curr.amount });
+      } else {
+        accum[match].amount += curr.amount;
+      }
+      return accum;
+    }, []);
+
+    return (
+      <div>
+        <div>{`Cash: ${Number.parseFloat(totalCash).toFixed(2)}`}</div>
+        <div id="portfolio-container">
+          {combined.map(transaction => (
+            <div key={transaction.id} className="stock-container">
+              <div>
+                {transaction.symbol} - {transaction.amount} shares
+              </div>
+              <div>
+                Current Price: {priceMap[transaction.symbol]}
+                Total Value: $
+                {Number.parseFloat(
+                  priceMap[transaction.symbol] * transaction.amount
+                ).toFixed(2)}
+              </div>
+            </div>
+          ))}
         </div>
         <button onClick={fetchLogOut}>Log out</button>
-      </>
+      </div>
     );
   }
 }
