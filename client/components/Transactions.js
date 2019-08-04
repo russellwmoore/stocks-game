@@ -20,7 +20,7 @@ class Transactions extends Component {
   }
 
   render() {
-    const { transactions, prices, user } = this.props;
+    const { transactions, prices, user, fetchLogOut } = this.props;
     const priceMap = prices.reduce((accum, current) => {
       accum[current.symbol] = current.price;
       return accum;
@@ -28,7 +28,7 @@ class Transactions extends Component {
     return (
       <>
         <h1>Transaction History</h1>
-        <div>So much history right now, {user.firstName}!</div>
+        <div>So much history right now, {user.name}!</div>
 
         <div>
           <table>

@@ -44,15 +44,14 @@ router.get('/me', (req, res, next) => {
 
 router.post('/signup', async (req, res, next) => {
   // find user by email, if the email exists, throw error
-  const { firstName, lastName, password, email } = req.body;
+  const { name, password, email } = req.body;
   console.log(req.body);
   const user = await User.findOne({ where: { email } });
   if (user) {
     res.json('already a user by that name');
   } else {
     const newUser = await User.create({
-      firstName,
-      lastName,
+      name,
       email,
       password,
     });

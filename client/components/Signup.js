@@ -7,8 +7,7 @@ class Signup extends React.Component {
   constructor() {
     super();
     this.state = {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       password: '',
     };
@@ -26,24 +25,17 @@ class Signup extends React.Component {
   };
 
   render() {
-    const { firstName, lastName, email, password } = this.state;
+    const { name, email, password } = this.state;
     return (
       <>
         <h1>Sign Up Now!</h1>
         <form onSubmit={this.handleSubmit}>
-          <label>First Name</label>
+          <label>Name</label>
           <input
             onChange={this.handleChange}
-            value={firstName}
+            value={name}
             type="text"
-            name="firstName"
-          />
-          <label>Last Name</label>
-          <input
-            onChange={this.handleChange}
-            value={lastName}
-            type="text"
-            name="lastName"
+            name="name"
           />
           <label>Email</label>
           <input

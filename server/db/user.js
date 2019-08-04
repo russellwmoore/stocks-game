@@ -4,21 +4,13 @@ const crypto = require('crypto');
 const Transaction = require('./transaction');
 
 const User = db.define('user', {
-  firstName: {
+  name: {
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  lastName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-
   email: {
     type: Sequelize.STRING,
     validate: {
@@ -40,6 +32,27 @@ const User = db.define('user', {
     },
   },
 });
+
+User.prototype.getCash = async function() {
+  const allBuyTransactions = await Transaction.findAll({
+    where: {
+      userId: this.id,
+    },
+  });
+
+  const cash = allBuyTransactions.reduce((accum, curr) => {
+    if (curr.type === 'init') {
+      return accum + Number(curr.price);
+    }
+    if (curr.type === 'buy') {
+      return accum - curr.amount * curr.price;
+    }
+    if (curr.type === 'sell') {
+      return accum + Number(curr.amount * curr.price);
+    }
+  }, 0);
+  return cash;
+};
 
 User.prototype.correctPassword = function(candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password();

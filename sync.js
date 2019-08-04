@@ -6,15 +6,13 @@ const sync = async () => {
   await db.sync({ force: true });
   await Promise.all([
     User.create({
-      firstName: 'Russell',
-      lastName: 'Moore',
+      name: 'Russell',
       email: 'r@r.com',
       password: 'pw',
     }),
     User.create({
-      firstName: 'Dan',
-      lastName: 'A',
-      email: 'a@a.com',
+      name: 'Dan',
+      email: 'd@d.com',
       password: 'pw',
     }),
   ]);
@@ -27,28 +25,28 @@ const sync = async () => {
   console.log('symbols seeded');
   await Promise.all([
     Transaction.create({
-      price: 100,
+      price: 50,
       symbol: 'KO',
       type: 'buy',
       userId: 1,
       amount: 20,
     }),
     Transaction.create({
-      price: 121,
+      price: 52,
       symbol: 'KO',
       type: 'buy',
       userId: 1,
       amount: 15,
     }),
     Transaction.create({
-      price: 50.21,
+      price: 187.59,
       symbol: 'FB',
       type: 'buy',
       userId: 1,
       amount: 10,
     }),
     Transaction.create({
-      price: 123.4,
+      price: 10.4,
       symbol: 'F',
       type: 'buy',
       userId: 1,

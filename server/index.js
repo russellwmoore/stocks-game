@@ -30,9 +30,7 @@ app.use((req, res, next) => {
   if (req.cookies[SID]) {
     Session.findOne({
       where: { sessionId: req.cookies[SID] },
-      include: [
-        { model: User, attributes: ['id', 'firstName', 'lastName', 'email'] },
-      ],
+      include: [{ model: User, attributes: ['id', 'name', 'email'] }],
     }).then(session => {
       // if there is no session in the db with the sessionId of the current cookie, send the request on its way. This is an unauthenticated user
       if (!session) {
@@ -59,8 +57,12 @@ app.use('/auth', require('./auth'));
 app.use('/api', authCheck, require('./api'));
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.send(err);
 });
 
 const http = app.listen(PORT, () => {
