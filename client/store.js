@@ -3,6 +3,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import history from './history';
+import { currentStocksSocket } from './socketStocks';
 
 // set user id on front end
 
@@ -64,6 +65,8 @@ export const fetchTransactions = userId => async dispatch => {
         return self.indexOf(symbol) === idx;
       }
     });
+  currentStocksSocket.emit('subscribe', symbols.join(','));
+
   const prices = await axios.post(`api/prices`, symbols);
   dispatch(setPrices(prices.data));
 };
@@ -93,7 +96,6 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ME:
-      console.log(action.user);
       return { ...state, user: action.user };
     case LOG_OUT:
       return { ...state, user: {} };

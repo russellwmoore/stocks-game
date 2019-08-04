@@ -63,6 +63,16 @@ app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
+const http = app.listen(PORT, () => {
   console.log(chalk.bold.blue(`listening on port ${PORT}`));
+});
+
+const io = require('socket.io')(http);
+
+io.on('connection', function(socket) {
+  console.log('a user connected', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('byyyyyeeee', socket.id);
+  });
 });

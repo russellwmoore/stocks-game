@@ -6,6 +6,8 @@ import { Router, Switch, Route } from 'react-router-dom';
 import Login from './components/Login';
 import Routes from './components/Routes';
 import history from './history';
+import './socket';
+import './socketStocks';
 
 const appDiv = document.getElementById('app');
 
