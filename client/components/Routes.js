@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from './Login';
-import Portfolio from './Portfolio';
 import Signup from './Signup';
 import Transactions from './Transactions';
-import Nav from './Nav';
-import Footer from './Footer';
 import { me } from '../store';
 import MainView from './MainView';
 

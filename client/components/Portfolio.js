@@ -50,7 +50,7 @@ class Portfolio extends Component {
     }, []);
 
     return (
-      <div>
+      <div id="portfolio">
         <div>{`Cash: ${Number.parseFloat(totalCash).toFixed(2)}`}</div>
         <div id="portfolio-container">
           {combined.map(transaction => (

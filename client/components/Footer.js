@@ -4,13 +4,17 @@ const Footer = props => {
   return (
     <div id="footer">
       Data provided for free by{' '}
-      <a target="_blank" href="https://iextrading.com/developer">
-        IEX
-      </a>
+      <span className="footer-link">
+        <a target="_blank" href="https://iextrading.com/developer">
+          IEX
+        </a>
+      </span>
       .{' '}
-      <a target="_blank" href="https://iextrading.com/api-exhibit-a/">
-        View IEX’s Terms of Use.
-      </a>
+      <span className="footer-link">
+        <a target="_blank" href="https://iextrading.com/api-exhibit-a/">
+          View IEX’s Terms of Use.
+        </a>
+      </span>
     </div>
   );
 };

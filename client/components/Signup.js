@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { signupUser } from '../store';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 class Signup extends React.Component {
   constructor() {
@@ -29,30 +29,39 @@ class Signup extends React.Component {
     return (
       <>
         <h1>Sign Up Now!</h1>
-        <form onSubmit={this.handleSubmit}>
-          <label>Name</label>
-          <input
-            onChange={this.handleChange}
-            value={name}
-            type="text"
-            name="name"
-          />
-          <label>Email</label>
-          <input
-            onChange={this.handleChange}
-            value={email}
-            type="text"
-            name="email"
-          />
-          <label>Password</label>
-          <input
-            onChange={this.handleChange}
-            value={password}
-            type="password"
-            name="password"
-          />
-          <button type="submit">Log In</button>
+        <form onSubmit={this.handleSubmit} className="stock-form">
+          <div>
+            <label>Name</label>
+            <input
+              onChange={this.handleChange}
+              value={name}
+              type="text"
+              name="name"
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              onChange={this.handleChange}
+              value={email}
+              type="text"
+              name="email"
+            />
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              onChange={this.handleChange}
+              value={password}
+              type="password"
+              name="password"
+            />
+          </div>
+          <button type="submit">Sign Up</button>
         </form>
+        <p>
+          Have an account already? <Link to="/login">Log in</Link>
+        </p>
       </>
     );
   }

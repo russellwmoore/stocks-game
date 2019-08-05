@@ -44,9 +44,13 @@ class Purchase extends Component {
 
   render() {
     return (
-      <div>
+      <div id="purchase">
         {this.state.errorMessage}
-        <form onSubmit={this.handleSubmit}>
+        <form
+          onSubmit={this.handleSubmit}
+          className="stock-form"
+          id="purchase-form"
+        >
           <div>
             <label>Symbol</label>
             <input
