@@ -1,7 +1,16 @@
 .stock-container {
   display: flex;
-  justify-content: space-between;
   max-width: 450px;
+}
+
+.symbol,
+.shares {
+  width: 60px;
+}
+
+.price,
+.value {
+  width: 100px;
 }
 
 #main-view {
@@ -129,5 +138,16 @@ p a {
 }
 #main-view a:hover,
 p a:hover {
+  color: gray;
+}
+
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
+
+.gray {
   color: gray;
 }

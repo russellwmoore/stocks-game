@@ -22,6 +22,15 @@ export const currentStocksSocket = io(url);
 // // Disconnect from the channel
 // currentStocksSocket.on('disconnect', () => console.log('Disconnected.'));
 
+export const socketsForComponent = update => {
+  currentStocksSocket.on('connect', () => {
+    console.log('stockets working');
+    currentStocksSocket.on('message', message => {
+      update(JSON.parse(message));
+    });
+  });
+};
+
 const url2 = 'https://ws-api.iextrading.com/1.0/deep';
 const openPriceSocket = require('socket.io-client')(url2);
 
@@ -37,3 +46,20 @@ openPriceSocket.on('connect', () => {
   );
   openPriceSocket.on('message', msg => console.log('opening price: ', msg));
 });
+
+// const url3 = 'https://ws-api.iextrading.com/1.0/deep';
+// const socketTrades = require('socket.io-client')(url3);
+
+// socketTrades.on('connect', () => {
+//   socketTrades.emit(
+//     'subscribe',
+//     JSON.stringify({
+//       symbols: ['f'],
+//       channels: ['trades'],
+//     })
+//   );
+
+//   socketTrades.on('message', msg => {
+//     console.log('trades??', msg);
+//   });
+// });

@@ -13,6 +13,7 @@ const SIGNUP_USER = 'SIGNUP_USER';
 const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
 const SET_PRICES = 'SET_PRICES';
 const UPDATE_PRICE = 'UPDATE_PRICE';
+const SET_OPENING_PRICES = 'SET_OPENING_PRICES';
 
 const setMe = user => ({ type: GET_ME, user });
 const signUp = user => ({ type: SIGNUP_USER, user });
@@ -23,6 +24,7 @@ const setTransactions = transactions => ({
 const setPrices = prices => ({ type: SET_PRICES, prices });
 export const updatePrice = price => ({ type: UPDATE_PRICE, price });
 const logOut = () => ({ type: LOG_OUT });
+const setOpeningPrices = prices => ({ type: SET_OPENING_PRICES, prices });
 
 export const fetchMe = (email, password) => dispatch => {
   console.log(email, password);
@@ -68,8 +70,11 @@ export const fetchTransactions = userId => async dispatch => {
     });
   currentStocksSocket.emit('subscribe', symbols.join(','));
 
+  const openPrices = await axios.post('/api/open-prices', symbols);
+  console.log('openPrices in thunk', openPrices.data);
+
   const prices = await axios.post(`api/prices`, symbols);
-  dispatch(setPrices(prices.data));
+  dispatch(setPrices(openPrices.data));
 };
 
 export const fetchPrices = symbols => async dispatch => {
@@ -108,10 +113,22 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         prices: state.prices.map(price => {
-          if (price.symbol === action.price.symbol) return action.price;
-          else return price;
+          if (price.symbol === action.price.symbol) {
+            return { ...price, price: action.price.price };
+          } else return price;
         }),
       };
+
+    case SET_OPENING_PRICES:
+    // action.prices = [
+    // { symbol: 'F', openingPrice: 9.28 },
+    // { symbol: 'FB', openingPrice: 189.02 },
+    // { symbol: 'KO', openingPrice: 52.33 }
+    // ]
+    // state.prices = [{ symbol: "F", price: 9.15, size: 2500, time: 1565026986271, seq: 1153 }]
+
+    // go through state.prices
+    // if you see
     default:
       return state;
   }

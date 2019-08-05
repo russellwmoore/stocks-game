@@ -2,6 +2,7 @@ const router = require('express').Router();
 const axios = require('axios');
 const APIPATH = 'https://api.iextrading.com/1.0';
 const { Transaction, User } = require('./db');
+const iex = require('iexcloud_api_wrapper');
 
 module.exports = router;
 
@@ -34,7 +35,9 @@ router.post('/prices', (req, res, next) => {
   console.log('symbols in api route #######', symbols);
   axios
     .get(`${APIPATH}/tops/last?symbols=${symbols}`)
-    .then(({ data }) => res.send(data))
+    .then(({ data }) => {
+      return res.send(data);
+    })
     .catch(next);
 });
 
@@ -77,6 +80,28 @@ router.post('/buy', async (req, res, next) => {
     return res.json(newTransaction);
   } catch (error) {
     console.error(error);
+    next(error);
+  }
+});
+
+// wow, can't promise.all on this api wrapper!.
+router.post('/open-prices', async (req, res, next) => {
+  const symbols = req.body;
+  try {
+    const info = [];
+    for (let i = 0; i < symbols.length; i++) {
+      const quoteData = await iex.quote(symbols[i]);
+      info.push({
+        symbol: quoteData.symbol,
+        price: quoteData.latestPrice,
+        size: quoteData.iexRealtimeSize,
+        openingPrice: quoteData.previousClose,
+        time: quoteData.lastTradeTime,
+      });
+    }
+
+    res.send(info);
+  } catch (error) {
     next(error);
   }
 });

@@ -7,7 +7,7 @@ import {
   fetchPrices,
   updatePrice,
 } from '../store';
-import { currentStocksSocket } from '../socketStocks';
+import { currentStocksSocket, socketsForComponent } from '../socketStocks';
 import Purchase from './Purchase';
 
 class Portfolio extends Component {
@@ -34,10 +34,17 @@ class Portfolio extends Component {
   // TODO: move big functions away and import
   render() {
     const { transactions, fetchLogOut, prices } = this.props;
+
     const priceMap = prices.reduce((accum, current) => {
       accum[current.symbol] = current.price;
       return accum;
     }, {});
+
+    const openingPriceMap = prices.reduce((accum, current) => {
+      accum[current.symbol] = current.openingPrice;
+      return accum;
+    }, {});
+
     const totalCash = transactions.reduce((accum, curr) => {
       if (curr.type === 'init') {
         return accum + Number(curr.price);
@@ -45,10 +52,12 @@ class Portfolio extends Component {
         return accum - curr.price * curr.amount;
       }
     }, 0);
+
     const portfolioValue = transactions.reduce((accum, curr) => {
       if (curr.type === 'init') return accum;
       return accum + curr.amount * priceMap[curr.symbol];
     }, 0);
+
     const combined = transactions.reduce((accum, curr) => {
       if (curr.type === 'init') return accum;
       let match = -1;
@@ -59,7 +68,11 @@ class Portfolio extends Component {
         }
       }
       if (match === -1) {
-        accum.push({ symbol: curr.symbol, amount: curr.amount });
+        accum.push({
+          symbol: curr.symbol,
+          amount: curr.amount,
+          openingPrice: openingPriceMap[curr.symbol],
+        });
       } else {
         accum[match].amount += curr.amount;
       }
@@ -68,22 +81,44 @@ class Portfolio extends Component {
 
     return (
       <div id="portfolio">
-        <div>{`Portfolio Value: ${portfolioValue}`}</div>
+        <div>{`Portfolio Value: $${Number.parseFloat(portfolioValue).toFixed(
+          3
+        )}`}</div>
         <div id="portfolio-container">
-          {combined.map(transaction => (
-            <div key={transaction.id} className="stock-container">
-              <div>
-                {transaction.symbol} - {transaction.amount} shares
+          <div className="stock-container">
+            <div className="symbol">Symbol</div>
+            <div className="shares">Shares</div>
+            <div className="price">Current Price</div>
+            <div className="value">Total Value</div>
+          </div>
+          {combined.map(transaction => {
+            const color =
+              transaction.openingPrice > priceMap[transaction.symbol]
+                ? 'red'
+                : 'green';
+            console.log(
+              `${transaction.symbol}: ${transaction.openingPrice}, ${
+                priceMap[transaction.symbol]
+              }, `
+            );
+
+            return (
+              <div
+                key={transaction.id}
+                className={`stock-container ${color || `gray`}`}
+              >
+                <div className="symbol">{transaction.symbol}</div>
+                <div className="shares">{transaction.amount}</div>
+                <div className="price">${priceMap[transaction.symbol]}</div>
+                <div className="value">
+                  $
+                  {Number.parseFloat(
+                    priceMap[transaction.symbol] * transaction.amount
+                  ).toFixed(3)}
+                </div>
               </div>
-              <div>
-                Current Price: {priceMap[transaction.symbol]}
-                Total Value: $
-                {Number.parseFloat(
-                  priceMap[transaction.symbol] * transaction.amount
-                ).toFixed(2)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <button onClick={fetchLogOut}>Log out</button>
       </div>
