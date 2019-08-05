@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 class Purchase extends Component {
   constructor() {
@@ -43,8 +44,19 @@ class Purchase extends Component {
   };
 
   render() {
+    const { transactions } = this.props;
+    let totalCash = transactions.reduce((accum, curr) => {
+      if (curr.type === 'init') {
+        return accum + Number(curr.price);
+      } else if (curr.type === 'buy') {
+        return accum - curr.price * curr.amount;
+      }
+    }, 0);
+    totalCash = Number.parseFloat(totalCash).toFixed(2);
+
     return (
       <div id="purchase">
+        {`Total Cash : ${totalCash}`}
         {this.state.errorMessage}
         <form
           onSubmit={this.handleSubmit}
@@ -76,4 +88,10 @@ class Purchase extends Component {
   }
 }
 
-export default Purchase;
+const mapState = state => {
+  return {
+    transactions: state.transactions,
+  };
+};
+
+export default connect(mapState)(Purchase);

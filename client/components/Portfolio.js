@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { fetchLogOut, fetchTransactions, fetchPrices } from '../store';
-import { socket } from '../socketStocks';
+import {
+  fetchLogOut,
+  fetchTransactions,
+  fetchPrices,
+  updatePrice,
+} from '../store';
+import { currentStocksSocket } from '../socketStocks';
 import Purchase from './Purchase';
 
 class Portfolio extends Component {
@@ -15,11 +20,20 @@ class Portfolio extends Component {
 
   componentDidMount() {
     this.props.fetchTransactions(this.props.user.id);
+    currentStocksSocket.on('connect', () => {
+      console.log('stockets working');
+      currentStocksSocket.on('message', message => {
+        this.props.updatePrice(JSON.parse(message));
+      });
+    });
+    currentStocksSocket.on('disconnect', () => console.log('Disconnected.'));
   }
+
+  componentWillUnmount() {}
 
   // TODO: move big functions away and import
   render() {
-    const { transactions, user, fetchLogOut, prices } = this.props;
+    const { transactions, fetchLogOut, prices } = this.props;
     const priceMap = prices.reduce((accum, current) => {
       accum[current.symbol] = current.price;
       return accum;
@@ -31,7 +45,10 @@ class Portfolio extends Component {
         return accum - curr.price * curr.amount;
       }
     }, 0);
-
+    const portfolioValue = transactions.reduce((accum, curr) => {
+      if (curr.type === 'init') return accum;
+      return accum + curr.amount * priceMap[curr.symbol];
+    }, 0);
     const combined = transactions.reduce((accum, curr) => {
       if (curr.type === 'init') return accum;
       let match = -1;
@@ -51,7 +68,7 @@ class Portfolio extends Component {
 
     return (
       <div id="portfolio">
-        <div>{`Cash: ${Number.parseFloat(totalCash).toFixed(2)}`}</div>
+        <div>{`Portfolio Value: ${portfolioValue}`}</div>
         <div id="portfolio-container">
           {combined.map(transaction => (
             <div key={transaction.id} className="stock-container">
@@ -87,6 +104,7 @@ const mapDispatch = {
   fetchLogOut,
   fetchTransactions,
   fetchPrices,
+  updatePrice,
 };
 
 export default withRouter(

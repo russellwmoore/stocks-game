@@ -12,6 +12,7 @@ const LOG_OUT = 'LOG_OUT';
 const SIGNUP_USER = 'SIGNUP_USER';
 const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
 const SET_PRICES = 'SET_PRICES';
+const UPDATE_PRICE = 'UPDATE_PRICE';
 
 const setMe = user => ({ type: GET_ME, user });
 const signUp = user => ({ type: SIGNUP_USER, user });
@@ -20,7 +21,7 @@ const setTransactions = transactions => ({
   transactions,
 });
 const setPrices = prices => ({ type: SET_PRICES, prices });
-
+export const updatePrice = price => ({ type: UPDATE_PRICE, price });
 const logOut = () => ({ type: LOG_OUT });
 
 export const fetchMe = (email, password) => dispatch => {
@@ -103,10 +104,18 @@ const reducer = (state = initialState, action) => {
       return { ...state, transactions: action.transactions };
     case SET_PRICES:
       return { ...state, prices: action.prices };
-
+    case UPDATE_PRICE:
+      return {
+        ...state,
+        prices: state.prices.map(price => {
+          if (price.symbol === action.price.symbol) return action.price;
+          else return price;
+        }),
+      };
     default:
       return state;
   }
 };
 
-export default createStore(reducer, applyMiddleware(thunk, logger));
+const store = createStore(reducer, applyMiddleware(thunk, logger));
+export default store;
