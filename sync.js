@@ -57,21 +57,21 @@ const sync = async () => {
       symbol: 'GOOGL',
       type: 'buy',
       userId: 2,
-      amount: 10,
+      amount: 2,
     }),
     Transaction.create({
       price: 270,
       symbol: 'COST',
       type: 'buy',
       userId: 2,
-      amount: 130,
+      amount: 3,
     }),
     Transaction.create({
       price: 50,
       symbol: 'INTC',
       type: 'buy',
       userId: 2,
-      amount: 220,
+      amount: 3,
     }),
   ]);
   console.log('transactions seeded');
