@@ -30,15 +30,15 @@ class Transactions extends Component {
         <h1>Transaction History</h1>
         <div>So much history right now, {user.name}!</div>
 
-        <div>
+        <div id="transaction-container">
           <table>
             <tbody>
               <tr>
-                <td>Date</td>
-                <td>Type</td>
-                <td>Symbol</td>
-                <td>Amount</td>
-                <td>Price</td>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>Amount</th>
+                <th>Price</th>
               </tr>
               {transactions.map(transaction => {
                 const {
@@ -49,20 +49,24 @@ class Transactions extends Component {
                   id,
                   createdAt,
                 } = transaction;
+                const initDate = new Date(createdAt);
+                const date = initDate.toLocaleString();
                 return (
                   <tr key={id}>
-                    <td>{new Date(createdAt).toUTCString()}</td>
+                    <td>{date}</td>
                     <td>{type.toUpperCase()}</td>
-                    <td>({symbol || 'Initial Balance'})</td>
-                    <td>{amount || 'N/A'}</td>
-                    <td>{Number.parseFloat(price).toFixed(2)}</td>
+                    <td className="center">({symbol || 'Initial Balance'})</td>
+                    <td className="right">{amount || 'N/A'}</td>
+                    <td className="right">
+                      {Number.parseFloat(price).toFixed(2)}
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          <button onClick={fetchLogOut}>Log out</button>
         </div>
-        <button onClick={fetchLogOut}>Log out</button>
       </>
     );
   }

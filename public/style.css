@@ -6,6 +6,25 @@
   padding: 10px;
 }
 
+#transaction-container {
+  margin-bottom: 20px;
+}
+
+table {
+  border-collapse: collapse;
+}
+td,
+th {
+  border-bottom: 1px solid #999;
+  padding: 0.6rem;
+}
+td.right {
+  text-align: right;
+}
+td.center {
+  text-align: center;
+}
+
 #portfolio {
   margin-bottom: 20px;
 }
@@ -16,22 +35,22 @@
   padding: 10px;
 }
 
-.symbol {
+.stock-container .symbol {
   text-align: left;
 }
 
-.shares {
+.stock-container .shares {
   text-align: center;
 }
-.symbol,
-.shares {
+.stock-container .symbol,
+.stock-container .shares {
   width: 60px;
 }
 
-.price {
+.stock-container .price {
   width: 75px;
 }
-.value {
+.stock-container .value {
   width: 100px;
 }
 
