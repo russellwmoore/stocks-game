@@ -7,8 +7,13 @@ import {
   fetchPrices,
   updatePrice,
 } from '../store';
+import {
+  makePriceMap,
+  makeOpeningPriceMap,
+  makePortfolioValue,
+  makePortFolioLineItems,
+} from '../utils';
 import { currentStocksSocket, socketsForComponent } from '../socketStocks';
-import Purchase from './Purchase';
 
 class Portfolio extends Component {
   constructor() {
@@ -23,6 +28,7 @@ class Portfolio extends Component {
     currentStocksSocket.on('connect', () => {
       console.log('stockets working');
       currentStocksSocket.on('message', message => {
+        console.log('soccket update', message);
         this.props.updatePrice(JSON.parse(message));
       });
     });
@@ -35,67 +41,40 @@ class Portfolio extends Component {
   render() {
     const { transactions, fetchLogOut, prices } = this.props;
 
-    const priceMap = prices.reduce((accum, current) => {
-      accum[current.symbol] = current.price;
-      return accum;
-    }, {});
+    // const priceMap = prices.reduce((accum, current) => {
+    //   accum[current.symbol] = current.price;
+    //   return accum;
+    // }, {});
+    const priceMap = makePriceMap(prices);
+    const openingPriceMap = makeOpeningPriceMap(prices);
+    const portfolioValue = makePortfolioValue(transactions, priceMap);
+    const portFolioLineItems = makePortFolioLineItems(
+      transactions,
+      openingPriceMap
+    );
 
-    const openingPriceMap = prices.reduce((accum, current) => {
-      accum[current.symbol] = current.openingPrice;
-      return accum;
-    }, {});
-
-    const totalCash = transactions.reduce((accum, curr) => {
-      if (curr.type === 'init') {
-        return accum + Number(curr.price);
-      } else if (curr.type === 'buy') {
-        return accum - curr.price * curr.amount;
-      }
-    }, 0);
-
-    const portfolioValue = transactions.reduce((accum, curr) => {
-      if (curr.type === 'init') return accum;
-      return accum + curr.amount * priceMap[curr.symbol];
-    }, 0);
-
-    const combined = transactions.reduce((accum, curr) => {
-      if (curr.type === 'init') return accum;
-      let match = -1;
-      for (let i = 0; i < accum.length; i++) {
-        if (accum[i].symbol === curr.symbol) {
-          match = i;
-          break;
-        }
-      }
-      if (match === -1) {
-        accum.push({
-          symbol: curr.symbol,
-          amount: curr.amount,
-          openingPrice: openingPriceMap[curr.symbol],
-        });
-      } else {
-        accum[match].amount += curr.amount;
-      }
-      return accum;
-    }, []);
-
+    const whichColor = transaction => {
+      if (transaction.openingPrice > priceMap[transaction.symbol]) {
+        return 'red';
+      } else if (transaction.openingPrice < priceMap[transaction.symbol]) {
+        return 'green';
+      } else return 'gray';
+    };
+    console.log('Pricemap', priceMap);
     return (
       <div id="portfolio">
         <div>{`Portfolio Value: $${Number.parseFloat(portfolioValue).toFixed(
           3
         )}`}</div>
         <div id="portfolio-container">
-          <div className="stock-container">
+          <div className="stock-container" id="legend">
             <div className="symbol">Symbol</div>
             <div className="shares">Shares</div>
-            <div className="price">Current Price</div>
+            <div className="price">Price</div>
             <div className="value">Total Value</div>
           </div>
-          {combined.map(transaction => {
-            const color =
-              transaction.openingPrice > priceMap[transaction.symbol]
-                ? 'red'
-                : 'green';
+          {portFolioLineItems.map(transaction => {
+            const color = whichColor(transaction);
             console.log(
               `${transaction.symbol}: ${transaction.openingPrice}, ${
                 priceMap[transaction.symbol]
@@ -103,10 +82,7 @@ class Portfolio extends Component {
             );
 
             return (
-              <div
-                key={transaction.id}
-                className={`stock-container ${color || `gray`}`}
-              >
+              <div key={transaction.id} className={`stock-container ${color}`}>
                 <div className="symbol">{transaction.symbol}</div>
                 <div className="shares">{transaction.amount}</div>
                 <div className="price">${priceMap[transaction.symbol]}</div>
