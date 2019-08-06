@@ -44,26 +44,31 @@ router.get('/me', (req, res, next) => {
 
 router.post('/signup', async (req, res, next) => {
   // find user by email, if the email exists, throw error
-  const { name, password, email } = req.body;
-  console.log(req.body);
-  const user = await User.findOne({ where: { email } });
-  if (user) {
-    res.json('already a user by that name');
-  } else {
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-    });
+  try {
+    const { name, password, email } = req.body;
+    console.log(req.body);
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      const error = new Error('already a user by that email address');
+      error.messageStatus = 'Email already exists';
+      next(error);
+    } else {
+      const newUser = await User.create({
+        name,
+        email,
+        password,
+      });
 
-    const session = await Session.create({
-      sessionId: req.cookies.SID,
-    });
+      const session = await Session.create({
+        sessionId: req.cookies.SID,
+      });
 
-    await session.setUser(newUser.id);
+      await session.setUser(newUser.id);
 
-    // TODO: also need to set up their transaction history here
-    res.json(newUser);
+      res.json(newUser);
+    }
+  } catch (e) {
+    next(e);
   }
 });
 

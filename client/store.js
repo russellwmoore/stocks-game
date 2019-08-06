@@ -11,7 +11,9 @@ const GET_ME = 'GET_ME';
 const LOG_OUT = 'LOG_OUT';
 const SIGNUP_USER = 'SIGNUP_USER';
 const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
+const ADD_TRANSACTION = 'ADD_TRANSACTION';
 const SET_PRICES = 'SET_PRICES';
+const ADD_PRICE = 'ADD_PRICE';
 const UPDATE_PRICE = 'UPDATE_PRICE';
 const SET_OPENING_PRICES = 'SET_OPENING_PRICES';
 
@@ -23,8 +25,10 @@ const setTransactions = transactions => ({
 });
 const setPrices = prices => ({ type: SET_PRICES, prices });
 export const updatePrice = price => ({ type: UPDATE_PRICE, price });
+const addPrice = price => ({ type: ADD_PRICE, price });
 const logOut = () => ({ type: LOG_OUT });
 const setOpeningPrices = prices => ({ type: SET_OPENING_PRICES, prices });
+const addTransaction = transaction => ({ type: ADD_TRANSACTION, transaction });
 
 export const fetchMe = (email, password) => dispatch => {
   console.log(email, password);
@@ -35,7 +39,9 @@ export const fetchMe = (email, password) => dispatch => {
       dispatch(setMe(data));
       history.push('/portfolio');
     })
-    .catch(e => console.error(`can't set user`));
+    .catch(e => {
+      console.error(`can't set user`, e);
+    });
   // TODO: dispatch errors to front end
 };
 
@@ -47,39 +53,69 @@ export const signupUser = user => dispatch => {
       dispatch(setMe(data));
       history.push('/portfolio');
     })
-    .catch(e => console.error(e));
+    .catch(e => {
+      console.error('Error with signup', e);
+    });
 };
 
 export const fetchLogOut = () => dispatch => {
-  axios.post('/auth/logout').then(({ data }) => {
-    console.log(data);
-    dispatch(logOut());
-    history.push('/');
-  });
+  axios
+    .post('/auth/logout')
+    .then(({ data }) => {
+      console.log(data);
+      dispatch(logOut());
+      history.push('/');
+    })
+    .catch(e => console.error('logout failed', e));
 };
 
 export const fetchTransactions = userId => async dispatch => {
-  const transactions = await axios.get(`/api/transactions/${userId}`);
-  dispatch(setTransactions(transactions.data));
-  const symbols = transactions.data
-    .map(t => t.symbol)
-    .filter((symbol, idx, self) => {
-      if (symbol) {
-        return self.indexOf(symbol) === idx;
-      }
-    });
-  currentStocksSocket.emit('subscribe', symbols.join(','));
+  try {
+    const transactions = await axios.get(`/api/transactions/${userId}`);
+    dispatch(setTransactions(transactions.data));
 
-  const openPrices = await axios.post('/api/open-prices', symbols);
-  console.log('openPrices in thunk', openPrices.data);
+    const symbols = transactions.data
+      .map(t => t.symbol)
+      .filter((symbol, idx, self) => {
+        if (symbol) {
+          return self.indexOf(symbol) === idx;
+        }
+      });
+    currentStocksSocket.emit('subscribe', symbols.join(','));
 
-  const prices = await axios.post(`api/prices`, symbols);
-  dispatch(setPrices(openPrices.data));
+    const openPrices = await axios.post('/api/open-prices', symbols);
+    console.log('openPrices in thunk', openPrices.data);
+
+    // const prices = await axios.post(`api/prices`, symbols);
+    dispatch(setPrices(openPrices.data));
+  } catch (e) {
+    console.error('Problem Fetching Transactions', e);
+  }
+};
+
+export const fetchAddTransaction = transaction => async dispatch => {
+  try {
+    const { data: newTransaction } = await axios.post('/api/buy', transaction);
+
+    console.log('type of newTransaction*****', newTransaction instanceof Error);
+    dispatch(addTransaction(newTransaction)); // add transaction to state
+    const { data: price } = await axios.post('/api/open-prices', [
+      newTransaction.symbol,
+    ]);
+    dispatch(addPrice(price[0])); // add opening price to state, and current.
+    currentStocksSocket.emit('subscribe', newTransaction.symbol); // subsribe socket to changes with this particular stock
+  } catch (error) {
+    console.error('problem in fetchAddTransaction thunk', error);
+  }
 };
 
 export const fetchPrices = symbols => async dispatch => {
-  const { data } = axios.post(`api/prices`, symbols);
-  dispatch(setPrices(data));
+  try {
+    const { data } = axios.post(`api/prices`, symbols);
+    dispatch(setPrices(data));
+  } catch (e) {
+    console.error('error fetching prices', e);
+  }
 };
 
 export const me = () => dispatch => {
@@ -107,8 +143,15 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: {} };
     case SET_TRANSACTIONS:
       return { ...state, transactions: action.transactions };
+    case ADD_TRANSACTION:
+      return {
+        ...state,
+        transactions: [...state.transactions, action.transaction],
+      };
     case SET_PRICES:
       return { ...state, prices: action.prices };
+    case ADD_PRICE:
+      return { ...state, prices: [...state.prices, action.price] };
     case UPDATE_PRICE:
       return {
         ...state,

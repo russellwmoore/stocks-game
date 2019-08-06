@@ -25,14 +25,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   // if this cookie has a session, then add the user info to the req.user object. Don't include passwords!
   if (req.cookies[SID]) {
-    Session.findOne({
-      where: { sessionId: req.cookies[SID] },
-      include: [{ model: User, attributes: ['id', 'name', 'email'] }],
-    }).then(session => {
-      // if there is no session in the db with the sessionId of the current cookie, send the request on its way. This is an unauthenticated user
+    try {
+      const session = await Session.findOne({
+        where: { sessionId: req.cookies[SID] },
+        include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+      });
       if (!session) {
         next();
       } else {
@@ -40,10 +40,14 @@ app.use((req, res, next) => {
         req.user = session.user.get({ plain: true });
         next();
       }
-    });
+    } catch (e) {
+      console.log('error finding the session', e);
+      next(e);
+    }
   } else {
     next();
   }
+  // if there is no session in the db with the sessionId of the current cookie, send the request on its way. This is an unauthenticated user
 });
 
 app.use((req, res, next) => {
@@ -60,9 +64,11 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.send(err);
+
+app.use(function(err, req, res, next) {
+  console.error(err.message); // Log error message in our server's console
+  if (!err.statusCode) err.statusCode = 500; // If err has no specified error code, set error code to 'Internal Server Error (500)'
+  res.status(err.statusCode).json(err.message); // All HTTP requests must have a response, so let's send back an error with its status code and message
 });
 
 const http = app.listen(PORT, () => {

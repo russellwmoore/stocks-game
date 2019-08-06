@@ -1,14 +1,36 @@
 .stock-container {
   display: flex;
   max-width: 450px;
+  text-align: right;
+  border-bottom: 1px solid black;
+  padding: 10px;
 }
 
+#portfolio {
+  margin-bottom: 20px;
+}
+
+#legend {
+  text-align: right;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.symbol {
+  text-align: left;
+}
+
+.shares {
+  text-align: center;
+}
 .symbol,
 .shares {
   width: 60px;
 }
 
-.price,
+.price {
+  width: 75px;
+}
 .value {
   width: 100px;
 }

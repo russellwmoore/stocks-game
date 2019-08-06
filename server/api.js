@@ -6,22 +6,10 @@ const iex = require('iexcloud_api_wrapper');
 
 module.exports = router;
 
-// router.get('/:stock', (req, res, next) => {
-//   iex
-//     .deepBook('ko')
-//     .then(quote => res.json(quote))
-//     .catch(next);
-
-//   // axios
-//   //   .get(`${APIPATH}/tops`)
-//   //   .then(({ data }) => res.json(data))
-//   //   .catch(next);
-// });
-
 router.get('/transactions/:id', (req, res, next) => {
   Transaction.findAll({
     where: { userId: req.params.id },
-    order: [['createdAt', 'DESC']],
+    order: [['createdAt', 'ASC']],
   })
     .then(transactions => res.json(transactions))
     .catch(next);
@@ -52,6 +40,7 @@ router.post('/buy', async (req, res, next) => {
     if (data.length === 0) {
       return res.json(`no current price for this ${symbol}`);
     }
+
     const user = await User.findByPk(req.user.id);
     const cash = await user.getCash();
     const { price } = data[0];

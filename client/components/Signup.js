@@ -44,7 +44,7 @@ class Signup extends React.Component {
             <input
               onChange={this.handleChange}
               value={email}
-              type="text"
+              type="email"
               name="email"
             />
           </div>

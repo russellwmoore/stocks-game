@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { fetchAddTransaction, updatePrice } from '../store';
 
 class Purchase extends Component {
   constructor() {
@@ -34,13 +35,10 @@ class Purchase extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    axios
-      .post('/api/buy', {
-        symbol: this.state.symbol,
-        amount: this.state.amount,
-      })
-      .then(({ data }) => console.log(data))
-      .catch(e => console.log(e.message));
+    this.props.fetchAddTransaction({
+      symbol: this.state.symbol,
+      amount: this.state.amount,
+    });
   };
 
   render() {
@@ -94,4 +92,11 @@ const mapState = state => {
   };
 };
 
-export default connect(mapState)(Purchase);
+const mapDispatch = {
+  fetchAddTransaction,
+  updatePrice,
+};
+export default connect(
+  mapState,
+  mapDispatch
+)(Purchase);

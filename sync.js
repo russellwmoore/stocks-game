@@ -78,42 +78,5 @@ const sync = async () => {
   await db.close();
   console.log('all done!');
 };
-// db.sync()
-//   .then(() => console.log('db synced'))
-//   .then(() => {
-//     Promise.all([
-//       User.create({
-//         firstName: 'Russell',
-//         lastName: 'Moore',
-//         email: 'r@r.com',
-//         password: 'pw',
-//       }),
-//       User.create({
-//         firstName: 'Dan',
-//         lastName: 'A',
-//         email: 'a@a.com',
-//         password: 'pw',
-//       }),
-//     ])
-//       .then(() => {
-//         const stockPromises = stocks.map(stock => {
-//           return Stock.create(stock);
-//         });
-//         console.log(`Created Users`);
-//         return Promise.all(stockPromises);
-//       })
-//       .then(() => {
-//         console.log('stocks done');
-//         return Transaction.create({
-//           price: 100,
-//           symbol: 'KO',
-//           type: 'buy',
-//           userId: 1,
-//         });
-//       })
-//       .then(() => {
-//         db.close().then(() => console.log('DB closed'));
-//       });
-//   });
 
 sync();
