@@ -13,7 +13,6 @@ class Routes extends Component {
   }
 
   render() {
-    console.log('in routes comoponent', this.props);
     return (
       <Switch>
         <Route path="/login" component={Login} />

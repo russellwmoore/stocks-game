@@ -35,16 +35,9 @@ class Portfolio extends Component {
     currentStocksSocket.on('disconnect', () => console.log('Disconnected.'));
   }
 
-  componentWillUnmount() {}
-
-  // TODO: move big functions away and import
   render() {
-    const { transactions, fetchLogOut, prices } = this.props;
+    const { transactions, fetchLogOut, prices, user } = this.props;
 
-    // const priceMap = prices.reduce((accum, current) => {
-    //   accum[current.symbol] = current.price;
-    //   return accum;
-    // }, {});
     const priceMap = makePriceMap(prices);
     const openingPriceMap = makeOpeningPriceMap(prices);
     const portfolioValue = makePortfolioValue(transactions, priceMap);
@@ -60,7 +53,7 @@ class Portfolio extends Component {
         return 'green';
       } else return 'gray';
     };
-    console.log('Pricemap', priceMap);
+
     return (
       <div id="portfolio">
         <div>{`Portfolio Value: $${Number.parseFloat(portfolioValue).toFixed(
@@ -70,22 +63,18 @@ class Portfolio extends Component {
           <div className="stock-container" id="legend">
             <div className="symbol">Symbol</div>
             <div className="shares">Shares</div>
-            <div className="price">Price</div>
+            <div className="price">Current Price</div>
             <div className="value">Total Value</div>
           </div>
           {portFolioLineItems.map(transaction => {
             const color = whichColor(transaction);
-            console.log(
-              `${transaction.symbol}: ${transaction.openingPrice}, ${
-                priceMap[transaction.symbol]
-              }, `
-            );
-
             return (
               <div key={transaction.id} className={`stock-container ${color}`}>
                 <div className="symbol">{transaction.symbol}</div>
                 <div className="shares">{transaction.amount}</div>
-                <div className="price">${priceMap[transaction.symbol]}</div>
+                <div className="price">
+                  ${Number.parseFloat(priceMap[transaction.symbol]).toFixed(3)}
+                </div>
                 <div className="value">
                   $
                   {Number.parseFloat(
@@ -96,7 +85,7 @@ class Portfolio extends Component {
             );
           })}
         </div>
-        <button onClick={fetchLogOut}>Log out</button>
+        <button onClick={fetchLogOut}>{`Log out ${user.name}`}</button>
       </div>
     );
   }

@@ -59,6 +59,7 @@ class Signup extends React.Component {
           </div>
           <button type="submit">Sign Up</button>
         </form>
+        <span className="red">{this.props.error.signUp}</span>
         <p>
           Have an account already? <Link to="/login">Log in</Link>
         </p>
@@ -67,7 +68,7 @@ class Signup extends React.Component {
   }
 }
 
-const mapState = state => ({ user: state.user });
+const mapState = state => ({ user: state.user, error: state.error });
 
 const mapDispatch = {
   signupUser,

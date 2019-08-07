@@ -38,7 +38,9 @@ router.post('/buy', async (req, res, next) => {
   try {
     const { data } = await axios.get(`${APIPATH}/tops/last?symbols=${symbol}`);
     if (data.length === 0) {
-      return res.json(`no current price for this ${symbol}`);
+      console.log('inside');
+      const error = new Error('No such stock ticker');
+      return next(error);
     }
 
     const user = await User.findByPk(req.user.id);
@@ -46,7 +48,9 @@ router.post('/buy', async (req, res, next) => {
     const { price } = data[0];
 
     if (price * amount > cash) {
-      const error = new Error('Not enough money');
+      const error = new Error(
+        `You don't have enough money for ${amount} shares of ${symbol}`
+      );
       error.messageStatus = `Not enough money to by ${amount} shares of ${symbol}`;
       return next(error);
     }

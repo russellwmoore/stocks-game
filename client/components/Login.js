@@ -35,6 +35,7 @@ class Login extends React.Component {
     const { email, password } = this.state;
     return (
       <>
+        <h1>Stocks ++</h1>
         <h1>Log in Now!</h1>
         <form onSubmit={this.handleSubmit} className="stock-form">
           <div>
@@ -57,6 +58,7 @@ class Login extends React.Component {
           </div>
           <button type="submit">Log In</button>
         </form>
+        <span>{this.props.error.message}</span>
         <p>
           No Account? <Link to="/signup">Sign up now</Link>.
         </p>
@@ -65,7 +67,7 @@ class Login extends React.Component {
   }
 }
 
-const mapState = state => ({ user: state.user });
+const mapState = state => ({ user: state.user, error: state.error });
 
 const mapDispatch = {
   fetchMe,

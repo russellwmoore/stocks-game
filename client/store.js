@@ -16,6 +16,10 @@ const SET_PRICES = 'SET_PRICES';
 const ADD_PRICE = 'ADD_PRICE';
 const UPDATE_PRICE = 'UPDATE_PRICE';
 const SET_OPENING_PRICES = 'SET_OPENING_PRICES';
+const SIGNUP_ERROR = 'SIGNUP_ERROR';
+const PURCHASE_ERROR = 'PURCHASE_ERROR';
+const CLEAR_ERROR = 'CLEAR_ERROR';
+const ERROR = 'ERROR';
 
 const setMe = user => ({ type: GET_ME, user });
 const signUp = user => ({ type: SIGNUP_USER, user });
@@ -29,9 +33,14 @@ const addPrice = price => ({ type: ADD_PRICE, price });
 const logOut = () => ({ type: LOG_OUT });
 const setOpeningPrices = prices => ({ type: SET_OPENING_PRICES, prices });
 const addTransaction = transaction => ({ type: ADD_TRANSACTION, transaction });
+const signupError = error => ({ type: SIGNUP_ERROR, error });
+const clearError = () => ({ type: CLEAR_ERROR });
+const purchaseError = error => ({ type: PURCHASE_ERROR, error });
+const apiError = error => ({ type: ERROR, error });
 
 export const fetchMe = (email, password) => dispatch => {
   console.log(email, password);
+  dispatch(clearError());
   axios
     .post('/auth/login', { email, password })
     .then(({ data }) => {
@@ -41,11 +50,12 @@ export const fetchMe = (email, password) => dispatch => {
     })
     .catch(e => {
       console.error(`can't set user`, e);
+      dispatch(apiError(e.response.data));
     });
-  // TODO: dispatch errors to front end
 };
 
 export const signupUser = user => dispatch => {
+  dispatch(clearError());
   return axios
     .post('/auth/signup', user)
     .then(({ data }) => {
@@ -55,6 +65,7 @@ export const signupUser = user => dispatch => {
     })
     .catch(e => {
       console.error('Error with signup', e);
+      dispatch(signupError(e.response.data));
     });
 };
 
@@ -94,6 +105,7 @@ export const fetchTransactions = userId => async dispatch => {
 };
 
 export const fetchAddTransaction = transaction => async dispatch => {
+  dispatch(clearError());
   try {
     const { data: newTransaction } = await axios.post('/api/buy', transaction);
 
@@ -104,8 +116,9 @@ export const fetchAddTransaction = transaction => async dispatch => {
     ]);
     dispatch(addPrice(price[0])); // add opening price to state, and current.
     currentStocksSocket.emit('subscribe', newTransaction.symbol); // subsribe socket to changes with this particular stock
-  } catch (error) {
-    console.error('problem in fetchAddTransaction thunk', error);
+  } catch (e) {
+    console.error('problem in fetchAddTransaction thunk', e);
+    dispatch(purchaseError(e.response.data));
   }
 };
 
@@ -133,6 +146,7 @@ const initialState = {
   user: {},
   transactions: [],
   prices: [],
+  error: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -161,7 +175,17 @@ const reducer = (state = initialState, action) => {
           } else return price;
         }),
       };
-
+    case SIGNUP_ERROR:
+      return {
+        ...state,
+        error: { signUp: action.error },
+      };
+    case PURCHASE_ERROR:
+      return { ...state, error: { purchase: action.error } };
+    case ERROR:
+      return { ...state, error: { message: action.error } };
+    case CLEAR_ERROR:
+      return { ...state, error: '' };
     case SET_OPENING_PRICES:
     // action.prices = [
     // { symbol: 'F', openingPrice: 9.28 },

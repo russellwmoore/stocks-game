@@ -6,6 +6,9 @@
   padding: 10px;
 }
 
+#purchase-error {
+  width: 90%;
+}
 #transaction-container {
   margin-bottom: 20px;
 }

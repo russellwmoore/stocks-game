@@ -13,11 +13,13 @@ router.post('/login', async (req, res, next) => {
     });
     if (!user) {
       console.log('No such user found:', email);
-      return res.status(401).send('Incorrect Email or Password');
+      const error = new Error('Incorrect Email or Password');
+      return next(error);
     }
     if (!user.correctPassword(password)) {
       console.log('Incorrect password for user:', email);
-      return res.status(401).send('Incorrect Email or Password');
+      const error = new Error('Incorrect Email or Password');
+      return next(error);
     }
     // Sessions are for logged in users only
     const [session, wasCreated] = await Session.findOrCreate({
@@ -47,11 +49,15 @@ router.post('/signup', async (req, res, next) => {
   try {
     const { name, password, email } = req.body;
     console.log(req.body);
+    if (!name) {
+      const error = new Error('Please input a name');
+      return next(error);
+    }
     const user = await User.findOne({ where: { email } });
     if (user) {
-      const error = new Error('already a user by that email address');
+      const error = new Error('Email address already exists!');
       error.messageStatus = 'Email already exists';
-      next(error);
+      return next(error);
     } else {
       const newUser = await User.create({
         name,
@@ -65,9 +71,10 @@ router.post('/signup', async (req, res, next) => {
 
       await session.setUser(newUser.id);
 
-      res.json(newUser);
+      return res.status(200).json(newUser);
     }
   } catch (e) {
+    console.error('auth route error', e);
     next(e);
   }
 });

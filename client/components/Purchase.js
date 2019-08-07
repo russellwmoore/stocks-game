@@ -54,7 +54,7 @@ class Purchase extends Component {
 
     return (
       <div id="purchase">
-        {`Total Cash : ${totalCash}`}
+        {`Total Cash : $${totalCash}`}
         {this.state.errorMessage}
         <form
           onSubmit={this.handleSubmit}
@@ -79,6 +79,10 @@ class Purchase extends Component {
               value={this.state.amount}
             />
           </div>
+          <div>
+            <p className="red">{this.props.error.purchase || ''}</p>
+          </div>
+
           <button type="submit">Buy</button>
         </form>
       </div>
@@ -89,6 +93,7 @@ class Purchase extends Component {
 const mapState = state => {
   return {
     transactions: state.transactions,
+    error: state.error,
   };
 };
 
