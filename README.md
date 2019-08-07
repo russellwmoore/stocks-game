@@ -1,6 +1,6 @@
 ### Stocks ++
 
-Clone down and run `npm i` in root folder and create a db called `ttp`.
+Clone down and run `npm i` in root folder and create a postgres db called `ttp`.
 
 Run `npm run seed` to seed database with 2 users and several transactions.
 
