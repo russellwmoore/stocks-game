@@ -45,7 +45,7 @@ class Portfolio extends Component {
       transactions,
       openingPriceMap
     );
-
+    console.log(portFolioLineItems);
     const whichColor = transaction => {
       if (transaction.openingPrice > priceMap[transaction.symbol]) {
         return 'red';

@@ -11,7 +11,10 @@ router.get('/transactions/:id', (req, res, next) => {
     where: { userId: req.params.id },
     order: [['createdAt', 'ASC']],
   })
-    .then(transactions => res.json(transactions))
+    .then(transactions => {
+      console.log(transactions);
+      res.json(transactions);
+    })
     .catch(next);
 });
 

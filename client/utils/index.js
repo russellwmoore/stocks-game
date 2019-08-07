@@ -1,3 +1,4 @@
+// TODO: generalize these two functions to be one function
 export const makePriceMap = prices =>
   prices.reduce((accum, current) => {
     accum[current.symbol] = current.price;

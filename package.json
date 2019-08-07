@@ -8,6 +8,7 @@
     "start:server": "NODE_ENV=development npx nodemon -q --watch server --ignore server/public server/index.js",
     "start:client": "npx webpack client/index.js -o public/bundle.js -w --mode=\"development\" --module-bind js=babel-loader",
     "dev": "npm run start:server & npm run start:client",
+    "seed": "node sync.js",
     "test": "jest --watch"
   },
   "repository": {
