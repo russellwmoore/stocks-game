@@ -1,5 +1,7 @@
 ### Stocks ++
 
+Stocks++ is a lightweight game made in JavaScript (Node, Express, React/Redux, Postgres). Each user that signs up is given an arbitrary amount of money to purchase stocks. You can view your complete transaction history and your current portfolio value with up to the second stock prices. 
+
 Clone down and run `npm i` in root folder and create a postgres db called `ttp`.
 
 Create an account at https://iexcloud.io. Create a .env file with the following info from your iexcloud account: 
