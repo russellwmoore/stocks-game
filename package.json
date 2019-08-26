@@ -10,7 +10,7 @@
     "dev": "npm run start:server & npm run start:client",
     "seed": "node sync.js",
     "test": "jest --watch",
-    "build": "npx webpack client/index.js -o public/bundle.js --mode=\"production\" --module-bind js=babel-loader"
+    "build": "webpack client/index.js -o public/bundle.js --mode=\"production\" --module-bind js=babel-loader"
   },
   "repository": {
     "type": "git",
