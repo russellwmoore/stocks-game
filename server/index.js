@@ -9,7 +9,7 @@ const { Session, User } = require('./db');
 const authCheck = require('./authCheck');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -71,7 +71,7 @@ app.use(function(err, req, res, next) {
   res.status(err.statusCode).json(err.message); // All HTTP requests must have a response, so let's send back an error with its status code and message
 });
 
-const http = app.listen(process.env.PORT || PORT, () => {
+const http = app.listen(PORT, () => {
   console.log(chalk.bold.blue(`listening on port ${PORT}`));
 });
 
