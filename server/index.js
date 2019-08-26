@@ -71,7 +71,7 @@ app.use(function(err, req, res, next) {
   res.status(err.statusCode).json(err.message); // All HTTP requests must have a response, so let's send back an error with its status code and message
 });
 
-const http = app.listen(PORT, () => {
+const http = app.listen(process.env.PORT || PORT, () => {
   console.log(chalk.bold.blue(`listening on port ${PORT}`));
 });
 
