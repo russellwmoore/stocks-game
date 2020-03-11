@@ -48,6 +48,8 @@ class Purchase extends Component {
         return accum + Number(curr.price);
       } else if (curr.type === 'buy') {
         return accum - curr.price * curr.amount;
+      } else if (curr.type === 'sell') {
+        return accum + curr.price * curr.amount;
       }
     }, 0);
     totalCash = Number.parseFloat(totalCash).toFixed(2);
@@ -83,7 +85,9 @@ class Purchase extends Component {
             <p className="red">{this.props.error.purchase || ''}</p>
           </div>
 
-          <button type="submit">Buy</button>
+          <button className="big-btn" type="submit">
+            Buy
+          </button>
         </form>
       </div>
     );
@@ -101,7 +105,4 @@ const mapDispatch = {
   fetchAddTransaction,
   updatePrice,
 };
-export default connect(
-  mapState,
-  mapDispatch
-)(Purchase);
+export default connect(mapState, mapDispatch)(Purchase);

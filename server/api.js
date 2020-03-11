@@ -12,7 +12,6 @@ router.get('/transactions/:id', (req, res, next) => {
     order: [['createdAt', 'ASC']],
   })
     .then(transactions => {
-      console.log(transactions);
       res.json(transactions);
     })
     .catch(next);
@@ -78,6 +77,29 @@ router.post('/buy', async (req, res, next) => {
     console.error(error);
     next(error);
   }
+});
+
+router.post('/sell', (req, res, next) => {
+  // get amount of stock and + current stock price.
+  // remove
+  // add  transaction to list as a sell with amount and price
+
+  const { price, symbol, amount } = req.body;
+  Transaction.create({
+    price,
+    symbol,
+    type: 'sell',
+    amount,
+    userId: req.user.id,
+  })
+    .then(transaction => {
+      console.log('transaction complete', transaction);
+      return res.send(transaction);
+    })
+    .catch(e => {
+      console.log('error in sell', e);
+      next(e);
+    });
 });
 
 // wow, can't promise.all on this api wrapper!.

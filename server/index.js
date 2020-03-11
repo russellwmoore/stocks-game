@@ -51,7 +51,7 @@ app.use(async (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  // console.log('This is the req.user obj', req.user);
+  console.log('This is the req.user obj', req.user);
   next();
 });
 

@@ -57,7 +57,9 @@ class Signup extends React.Component {
               name="password"
             />
           </div>
-          <button type="submit">Sign Up</button>
+          <button className="big-btn" type="submit">
+            Sign Up
+          </button>
         </form>
         <span className="red">{this.props.error.signUp}</span>
         <p>
@@ -73,9 +75,4 @@ const mapState = state => ({ user: state.user, error: state.error });
 const mapDispatch = {
   signupUser,
 };
-export default withRouter(
-  connect(
-    mapState,
-    mapDispatch
-  )(Signup)
-);
+export default withRouter(connect(mapState, mapDispatch)(Signup));

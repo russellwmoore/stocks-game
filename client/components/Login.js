@@ -56,7 +56,9 @@ class Login extends React.Component {
               name="password"
             />
           </div>
-          <button type="submit">Log In</button>
+          <button className="big-btn" type="submit">
+            Log In
+          </button>
         </form>
         <span>{this.props.error.message}</span>
         <p>
@@ -72,9 +74,4 @@ const mapState = state => ({ user: state.user, error: state.error });
 const mapDispatch = {
   fetchMe,
 };
-export default withRouter(
-  connect(
-    mapState,
-    mapDispatch
-  )(Login)
-);
+export default withRouter(connect(mapState, mapDispatch)(Login));
