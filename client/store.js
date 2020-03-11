@@ -39,7 +39,7 @@ const purchaseError = error => ({ type: PURCHASE_ERROR, error });
 const apiError = error => ({ type: ERROR, error });
 
 export const fetchMe = (email, password) => dispatch => {
-  console.log(email, password);
+  // console.log(email, password);
   dispatch(clearError());
   axios
     .post('/auth/login', { email, password })
@@ -84,7 +84,6 @@ export const fetchTransactions = userId => async dispatch => {
   try {
     const transactions = await axios.get(`/api/transactions/${userId}`);
     dispatch(setTransactions(transactions.data));
-
     const symbols = transactions.data
       .map(t => t.symbol)
       .filter((symbol, idx, self) => {
@@ -119,6 +118,18 @@ export const fetchAddTransaction = transaction => async dispatch => {
   } catch (e) {
     console.error('problem in fetchAddTransaction thunk', e);
     dispatch(purchaseError(e.response.data));
+  }
+};
+
+export const fetchSellTransaction = transaction => async dispatch => {
+  console.log('we here', transaction);
+  dispatch(clearError());
+  try {
+    const { data: newTransaction } = await axios.post('/api/sell', transaction);
+    console.log('type of newTransaction*****', newTransaction);
+    dispatch(addTransaction(newTransaction));
+  } catch (e) {
+    console.error('problem in fetchAddTransaction thunk', e);
   }
 };
 

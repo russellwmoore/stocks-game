@@ -1,40 +1,96 @@
 // TODO: generalize these two functions to be one function
-export const makePriceMap = prices =>
-  prices.reduce((accum, current) => {
+
+/**
+ *  takes:
+ * [{symbol: "KO", price: 52.595, size: 100, openingPrice: 53.66, time: 1583935831958},
+    {symbol: "FB", price: 173.875, size: 100, openingPrice: 178.19, time: 1583935862800},
+    {symbol: "F", price: 6.09, size: 200, openingPrice: 6.26, time: 1583935857312}]
+ *
+ *  returns:
+ *  {"KO": 52.595, "FB": 173.875, "F": 6.09}
+ */
+export const makePriceMap = prices => {
+  return prices.reduce((accum, current) => {
     accum[current.symbol] = current.price;
     return accum;
   }, {});
+};
 
-export const makeOpeningPriceMap = prices =>
-  prices.reduce((accum, current) => {
+/**
+ *  takes:
+ * [{symbol: "KO", price: 52.595, size: 100, openingPrice: 53.66, time: 1583935831958},
+    {symbol: "FB", price: 173.875, size: 100, openingPrice: 178.19, time: 1583935862800},
+    {symbol: "F", price: 6.09, size: 200, openingPrice: 6.26, time: 1583935857312}]
+ *
+ *  returns:
+ *  {"KO": 53.66, "FB": 178.19, "F": 6.26}
+ */
+export const makeOpeningPriceMap = prices => {
+  return prices.reduce((accum, current) => {
     accum[current.symbol] = current.openingPrice;
     return accum;
   }, {});
+};
 
-export const makePortfolioValue = (transactions, priceMap) =>
-  transactions.reduce((accum, curr) => {
+/**
+ *
+ * @param {Object []} transactions - Array of transactions
+ * @param {string} transactions[].type - buy, sell or init
+ * @param {Object {}} priceMap - an object of current prices created by makePriceMap
+ * @returns {number} - total current value of portfolio
+ */
+export const makePortfolioValue = (transactions, priceMap) => {
+  let symbolsAndAmounts = transactions.reduce((accum, curr) => {
     if (curr.type === 'init') return accum;
-    return accum + curr.amount * priceMap[curr.symbol];
-  }, 0);
-
-export const makePortFolioLineItems = (transactions, openingPriceMap) =>
-  transactions.reduce((accum, curr) => {
-    if (curr.type === 'init') return accum;
-    let match = -1;
-    for (let i = 0; i < accum.length; i++) {
-      if (accum[i].symbol === curr.symbol) {
-        match = i;
-        break;
+    if (curr.type === 'buy') {
+      if (curr.symbol in accum) {
+        accum[curr.symbol] += curr.amount;
+      } else {
+        accum[curr.symbol] = curr.amount;
+      }
+    } else if (curr.type === 'sell') {
+      if (curr.symbol in accum) {
+        accum[curr.symbol] -= curr.amount;
+      } else {
+        accum[curr.symbol] = -curr.amount;
       }
     }
-    if (match === -1) {
-      accum.push({
-        symbol: curr.symbol,
-        amount: curr.amount,
-        openingPrice: openingPriceMap[curr.symbol],
-      });
-    } else {
-      accum[match].amount += curr.amount;
-    }
     return accum;
-  }, []);
+  }, {});
+
+  let value = Object.keys(symbolsAndAmounts).reduce((accum, curr) => {
+    return accum + priceMap[curr] * symbolsAndAmounts[curr];
+  }, 0);
+
+  return value;
+};
+
+export const makePortfolioLineItems = (transactions, openingPriceMap) =>
+  transactions
+    .reduce((accum, curr) => {
+      if (curr.type === 'init') return accum;
+      // console.log(curr);
+
+      let found = accum.find(obj => obj.symbol === curr.symbol);
+
+      if (found) {
+        if (curr.type === 'buy') {
+          found.amount += curr.amount;
+        } else if (curr.type === 'sell') {
+          found.amount -= curr.amount;
+        }
+      } else {
+        accum.push({
+          symbol: curr.symbol,
+          amount: curr.amount,
+          // openingPrice: openingPriceMap[curr.symbol],
+        });
+      }
+      return accum;
+    }, [])
+    .filter(el => el.amount > 0);
+
+export const nanChecker = num => {
+  if (Number.isNaN(num)) return 'loading';
+  else return num;
+};

@@ -60,7 +60,9 @@ class Login extends React.Component {
               name="password"
             />
           </div>
-          <button type="submit">Log In</button>
+          <button className="big-btn" type="submit">
+            Log In
+          </button>
         </form>
         <span>{this.props.error.message}</span>
         <p>

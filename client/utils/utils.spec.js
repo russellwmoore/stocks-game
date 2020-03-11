@@ -2,7 +2,7 @@ import {
   makePriceMap,
   makeOpeningPriceMap,
   makePortfolioValue,
-  makePortFolioLineItems,
+  makePortfolioLineItems,
 } from './index';
 
 describe('Check util Functions', () => {
