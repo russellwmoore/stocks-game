@@ -37,6 +37,10 @@ class Login extends React.Component {
       <>
         <h1>Stocks ++</h1>
         <h1>Log in Now!</h1>
+        <p1>
+          Stocks ++ is a market simulation tool. You are given $5,000 to buy and
+          sell until your heart is content. Good luck!
+        </p1>
         <form onSubmit={this.handleSubmit} className="stock-form">
           <div>
             <label>Email</label>
@@ -72,9 +76,4 @@ const mapState = state => ({ user: state.user, error: state.error });
 const mapDispatch = {
   fetchMe,
 };
-export default withRouter(
-  connect(
-    mapState,
-    mapDispatch
-  )(Login)
-);
+export default withRouter(connect(mapState, mapDispatch)(Login));
